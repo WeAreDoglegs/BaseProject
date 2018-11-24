@@ -1,0 +1,47 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 25
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdk
+        targetSdkVersion rootProject.ext.targetSdk
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+
+        debug {
+            buildConfigField 'int', 'API_TYPE', '1' //--->>当前接口类型  1:开发环境;2:测试环境;3:预生产版;4:生产环境;
+            buildConfigField("boolean", "LOG_DEBUG", "true")//--->>开发版本打开log功能
+        }
+        release {
+            buildConfigField 'int', 'API_TYPE', '4' //--->>当前接口类型  1:开发环境;2:测试环境;3:预生产版;4:生产环境;
+            buildConfigField("boolean", "LOG_DEBUG", "false")//--->>发布版本关闭log功能
+        }
+        AppProduct {
+            buildConfigField 'int', 'API_TYPE', '3' //--->>当前接口类型  1:开发环境;2:测试环境;3:预生产版;4:生产环境;
+            buildConfigField("boolean", "LOG_DEBUG", "true")//--->>预生产版本打开log功能
+        }
+        AppTest {
+            buildConfigField 'int', 'API_TYPE', '2' //--->>当前接口类型  1:开发环境;2:测试环境;3:预生产版;4:生产环境;
+            buildConfigField("boolean", "LOG_DEBUG", "true")//--->>调试版本打开log功能
+        }
+        AppDevelop {
+            buildConfigField 'int', 'API_TYPE', '1' //--->>当前接口类型  1:开发环境;2:测试环境;3:预生产版;4:生产环境;
+            buildConfigField("boolean", "LOG_DEBUG", "true")//--->>开发版本打开log功能
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation libraries.supportAppCompat
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+}

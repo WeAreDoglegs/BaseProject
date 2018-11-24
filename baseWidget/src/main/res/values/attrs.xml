@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+
+    <declare-styleable name="CircleImageView">
+        <attr name="civ_border_width" format="dimension" />
+        <attr name="civ_border_color" format="color" />
+        <attr name="civ_border_overlay" format="boolean" />
+        <attr name="civ_fill_color" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="SimpleTagImageView">
+        <attr name="simple_corner_distance" format="dimension" />
+        <attr name="simple_tag_width" format="dimension" />
+        <attr name="simple_tag_background_color" format="color" />
+        <attr name="simple_tag_text" format="string" />
+        <attr name="simple_tag_textSize" format="dimension" />
+        <attr name="simple_tag_textColor" format="color" />
+        <attr name="simple_tag_textStyle" format="enum">
+            <enum name="NORMAL" value="0" />
+            <enum name="BOLD" value="1" />
+            <enum name="ITALIC" value="2" />
+            <enum name="BOLD_ITALIC" value="3" />
+        </attr>
+        <attr name="simple_tag_orientation" format="enum">
+            <enum name="left_top" value="0" />
+            <enum name="right_top" value="1" />
+            <enum name="left_bottom" value="2" />
+            <enum name="right_bottom" value="3" />
+        </attr>
+        <attr name="simple_tag_enable" format="boolean" />
+        <attr name="simple_tag_round_radius" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="CustomAlignTextView">
+        <attr name="text" format="string" />
+        <attr name="maxLines" format="integer" />
+        <attr name="textSize" format="dimension" />
+        <attr name="textColor" format="color" />
+        <attr name="hint" format="string" />
+        <attr name="hintColor" format="color" />
+        <attr name="paddingLeft" format="dimension" />
+        <attr name="paddingRight" format="dimension" />
+        <attr name="paddingTop" format="dimension" />
+        <attr name="paddingBottom" format="dimension" />
+        <attr name="marginLeft" format="dimension" />
+        <attr name="marginRight" format="dimension" />
+        <attr name="marginTop" format="dimension" />
+        <attr name="marginBottom" format="dimension" />
+    </declare-styleable>
+
+</resources>

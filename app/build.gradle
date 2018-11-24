@@ -1,0 +1,113 @@
+apply plugin: 'com.android.application'
+apply from: "pack.gradle"
+
+def static BuildTime() {
+    return new Date().format("yyyyMMdd", TimeZone.getTimeZone("GMT+8"))
+}
+
+def BuildUseJenkins = true
+
+//将配置信息放入singing.properties
+Properties props = new Properties()
+props.load(new FileInputStream(file("signing.properties")))
+
+android {
+    compileSdkVersion rootProject.ext.compileSdk
+
+    defaultConfig {
+        applicationId "com.doglegs.baseproject"
+        minSdkVersion rootProject.ext.minSdk
+        targetSdkVersion rootProject.ext.targetSdk
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
+        flavorDimensions "1"
+        multiDexEnabled true
+
+        defaultConfig {
+            resConfigs "zh"
+        }
+
+        ndk {
+            //APP的build.gradle设置支持的SO库架构
+            abiFilters "armeabi", "x86"
+        }
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        javaCompileOptions.annotationProcessorOptions.includeCompileClasspath = true
+    }
+
+    lintOptions {
+        checkReleaseBuilds false
+        abortOnError false
+    }
+
+    //配置keystore签名
+    signingConfigs {
+        signing {
+            keyAlias props['KEY_ALIAS']
+            keyPassword props['KEY_PASSWORD']
+            storeFile file(props['KEY_STORE_FILE'])
+            storePassword props['KEY_STORE_PASSWORD']
+            v1SigningEnabled true
+            v2SigningEnabled true
+        }
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
+    repositories {
+        flatDir {
+            dirs 'libs'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+
+    buildTypes {
+
+        debug {
+//            minifyEnabled true
+//            zipAlignEnabled true //zipalign优化
+//            shrinkResources true //移除无用的resource文件
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.signing
+        }
+        release {
+            minifyEnabled true
+            zipAlignEnabled true //zipalign优化
+            shrinkResources true //移除无用的resource文件
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.signing
+        }
+        applicationVariants.all { variant ->
+
+            variant.getPackageApplication().outputScope.apkDatas.forEach { apkData ->
+                //这个修改输出APK的文件名
+                if (BuildUseJenkins.toBoolean()) {
+                    // 使用jenkins打包的文件路径
+                    apkData.outputFileName = "BASE_doglegs_v${defaultConfig.versionName}_${BuildTime()}.apk"
+                } else {
+                    // 使用Android Studio打包的文件路径
+                    apkData.outputFileName = "BASE_doglegs_${variant.productFlavors[0].name}_v${defaultConfig.versionName}.apk"
+                }
+            }
+
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:26.0.0-beta1'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:0.5'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:2.2.2'
+}

@@ -1,0 +1,53 @@
+project.afterEvaluate {
+
+    def BuildTime = BuildTime()
+
+    android.applicationVariants.all { variant ->
+
+        if (variant.buildType.name == 'release') {
+
+            // find assemble task first
+            def taskName = variant.name
+            def assembleTask = project.tasks.findByName("assemble${taskName.capitalize()}")
+            if (assembleTask == null) {
+                println "assembleTask not found, just return"
+                return
+            }
+
+            assembleTask.doLast {
+//            def IS_CHANNEL //是否多渠道
+//            String buildType = variant.buildType.name.toLowerCase()
+//            if (buildType.contains("debug") || buildType.contains("in_test") || buildType.contains("in_release")) {
+//                IS_CHANNEL = false
+//            }else{
+//                IS_CHANNEL = true
+//            }
+
+                def apkPath = "${buildDir}/outputs/apk/${taskName}/BASE_doglegs_v${variant.versionName}_${BuildTime}.apk"
+                def outPath = "${buildDir}/outputs/apk/${taskName}/jiagu_v${variant.versionName}_${BuildTime}"
+                def outApkPath = file(outPath)
+                def apk = file(apkPath)
+                println apkPath
+                if (apk.exists()) {
+                    println 'find need jiagu apk:' + apkPath
+                    jiaGuTask(apk, outApkPath, true)
+                }
+            }
+        }
+    }
+}
+
+/**
+ * 执行加固脚本
+ * @param lastApkPath 被加固的apk文件
+ * @param outApkPath 加固后存储路径
+ * @param outApkPath 是否进行渠道打包
+ * @return 执行结果
+ */
+def jiaGuTask(lastApkPath, outApkPath, isChannel) {
+    //执行加固
+    exec {
+        ignoreExitValue true
+        commandLine "${rootDir}/jiagu/jiagu.bat", lastApkPath, outApkPath, isChannel.toBoolean() ? "1" : "0"
+    }
+}

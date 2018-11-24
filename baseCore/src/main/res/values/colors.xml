@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3C73F1</color>
+    <color name="colorPrimaryDark">#3C73F1</color>
+    <color name="colorAccent">#3C73F1</color>
+
+    <!--通用颜色-->
+    <color name="common_white">#FFFFFF</color>
+    <color name="common_black">#323232</color>
+    <color name="common_transparent_black">#CC323232</color>
+    <color name="common_black_1">#212837</color>
+
+    <color name="common_gray_1">#C9D7ED</color>
+    <color name="common_gray_2">#989898</color>
+    <color name="common_gray_3">#EDEDEE</color>
+    <color name="common_gray_4">#EBF1FE</color>
+    <color name="common_gray_5">#F6F6F6</color>
+    <color name="common_gray_6">#C1C1C1</color>
+    <color name="common_gray_7">#D8D8D8</color>
+
+    <color name="common_green_1">#61AC31</color>
+    <color name="common_red_1">#E84936</color>
+
+    <color name="common_blue">#3C73F1</color>
+    <color name="common_blue_1">#95C3F5</color>
+    <color name="common_blue_2">#3D99FC</color>
+    <color name="common_blue_3">#94B0F0</color>
+
+    <color name="common_transparent_background">#80323232</color>
+
+</resources>
