@@ -8,4 +8,50 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="AppTheme.NoActionBar" parent="AppTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="BaseDialog" parent="@style/Base.V7.Theme.AppCompat.Light.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="BottomDialog.Animation" parent="Animation.AppCompat.Dialog">
+        <item name="android:windowEnterAnimation">@anim/translate_dialog_in</item>
+        <item name="android:windowExitAnimation">@anim/translate_dialog_out</item>
+    </style>
+    <style name="ImagePop.Animation" parent="Animation.AppCompat.Dialog">
+        <item name="android:windowEnterAnimation">@anim/alpha_dialog_in</item>
+        <item name="android:windowExitAnimation">@anim/alpha_dialog_out</item>
+    </style>
+
+    <style name="Ring.Car.Photo.Title.Gray" parent="android:Widget.TextView">
+        <item name="android:textSize">14sp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:paddingLeft">15dp</item>
+        <item name="android:background">@color/common_gray_3</item>
+        <item name="android:textColor">@color/common_black_1</item>
+    </style>
+
+    <style name="separator" parent="android:Widget.TextView">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">15dp</item>
+        <item name="android:background">@color/common_gray_3</item>
+    </style>
+
+    <style name="Ring.Car.Photo.Drawable.Text" parent="android:Widget.TextView">
+        <item name="android:textSize">16sp</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:drawablePadding">16dp</item>
+        <item name="android:textColor">@color/common_black</item>
+    </style>
+
+    <style name="Ring.Car.Photo.Content.Text" parent="android:Widget.TextView">
+        <item name="android:textSize">14sp</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:gravity">right|center_vertical</item>
+        <item name="android:textColor">@color/common_gray_2</item>
+    </style>
 </resources>

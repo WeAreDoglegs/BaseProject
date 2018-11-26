@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.alibaba.arouter'
 apply from: "pack.gradle"
 
 def static BuildTime() {
@@ -34,6 +35,11 @@ android {
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         javaCompileOptions.annotationProcessorOptions.includeCompileClasspath = true
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName(), AROUTER_GENERATE_DOC: "enable"]
+            }
+        }
     }
 
     lintOptions {
@@ -78,6 +84,8 @@ android {
 //            shrinkResources true //移除无用的resource文件
 //            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.signing
+            buildConfigField 'int', 'API_TYPE', '1' //--->>当前接口类型  1:开发环境;2:测试环境;3:预生产版;4:生产环境;
+            buildConfigField("boolean", "LOG_DEBUG", "true")//--->>开发版本打开log功能
         }
         release {
             minifyEnabled true
@@ -85,6 +93,8 @@ android {
             shrinkResources true //移除无用的resource文件
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.signing
+            buildConfigField 'int', 'API_TYPE', '4' //--->>当前接口类型  1:开发环境;2:测试环境;3:预生产版;4:生产环境;
+            buildConfigField("boolean", "LOG_DEBUG", "false")//--->>发布版本关闭log功能
         }
         applicationVariants.all { variant ->
 
@@ -105,9 +115,14 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.android.support:appcompat-v7:26.0.0-beta1'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:0.5'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:2.2.2'
+
+    implementation project(':doglegsBase')
+    implementation project(':doglegsWidget')
+
+    //butterknife
+    annotationProcessor libraries.butterknifeCompiler
+    //dagger2
+    annotationProcessor libraries.daggerCompiler
+    //arouter
+    annotationProcessor 'com.alibaba:arouter-compiler:1.2.1'
 }

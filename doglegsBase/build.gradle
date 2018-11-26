@@ -1,0 +1,76 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.jakewharton.butterknife'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdk
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdk
+        targetSdkVersion rootProject.ext.targetSdk
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        javaCompileOptions.annotationProcessorOptions.includeCompileClasspath = true
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName(), AROUTER_GENERATE_DOC: "enable"]
+            }
+        }
+    }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
+
+    repositories {
+        flatDir {
+            dirs 'libs'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
+
+    buildTypes {
+
+        debug {
+            buildConfigField 'int', 'API_TYPE', '1' //--->>当前接口类型  1:开发环境;2:测试环境;3:预生产版;4:生产环境;
+            buildConfigField("boolean", "LOG_DEBUG", "true")//--->>开发版本打开log功能
+        }
+        release {
+            buildConfigField 'int', 'API_TYPE', '4' //--->>当前接口类型  1:开发环境;2:测试环境;3:预生产版;4:生产环境;
+            buildConfigField("boolean", "LOG_DEBUG", "false")//--->>发布版本关闭log功能
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    api project(':doglegsCore')
+
+    //arouter
+//    api libraries.arouter_api
+//    annotationProcessor libraries.arouter_annotation
+    api 'com.alibaba:arouter-api:1.4.0'
+    annotationProcessor 'com.alibaba:arouter-compiler:1.2.1'
+    //butterknife
+    annotationProcessor libraries.butterknifeCompiler
+    //dagger2
+    annotationProcessor libraries.daggerCompiler
+    //高德定位
+    api 'com.amap.api:3dmap:6.4.0'
+    api 'com.amap.api:location:4.2.0'
+    api 'com.amap.api:search:6.1.0'
+    //oss对象存储
+    api 'com.aliyun.dpa:oss-android-sdk:+'
+}

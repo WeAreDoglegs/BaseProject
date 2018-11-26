@@ -2,8 +2,8 @@ ext {
     compileSdk = 27
     minSdk = 17
     targetSdk = compileSdk
-    versionCode = 3
-    versionName = "1.3.0"
+    versionCode = 1
+    versionName = "1.0.0"
 
     versions = [
             support           : "27.1.1",

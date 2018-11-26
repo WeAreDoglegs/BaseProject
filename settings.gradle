@@ -1,1 +1,1 @@
-include ':app', ':baseCore', ':baseWidget'
+include ':app', ':doglegsCore', ':doglegsWidget', ':doglegsBase'
