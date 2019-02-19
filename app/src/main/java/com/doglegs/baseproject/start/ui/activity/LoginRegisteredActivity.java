@@ -2,6 +2,7 @@ package com.doglegs.baseproject.start.ui.activity;
 
 import android.content.ClipData;
 import android.content.ClipboardManager;
+import android.os.Bundle;
 import android.view.View;
 
 import com.alibaba.android.arouter.facade.annotation.Route;
@@ -26,12 +27,12 @@ import butterknife.OnClick;
 public class LoginRegisteredActivity extends DogLegsBaseActivity<LoginRegisteredPresenter> implements ILoginRegisteredContract.IView {
 
     @Override
-    protected int getLayoutId() {
+    public int getLayoutId() {
         return R.layout.activity_login_registered;
     }
 
     @Override
-    protected void inject() {
+    public void inject() {
         DaggerActivityComponent.builder().appComponent(App.sAppComponent).
                 activityModule(new ActivityModule(this))
                 .retrofitModule(new RetrofitModule())
@@ -39,12 +40,12 @@ public class LoginRegisteredActivity extends DogLegsBaseActivity<LoginRegistered
     }
 
     @Override
-    protected void initView() {
+    public void initView(Bundle savedInstanceState) {
 
     }
 
     @Override
-    protected void initData() {
+    public void initData() {
         handleClipboardData();
     }
 

@@ -16,19 +16,17 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import qiu.niorgai.StatusBarCompat;
 
-public abstract class ABaseActivity<T extends RxPresenter> extends AActivity {
+public abstract class ABaseActivity<P extends RxPresenter> extends AActivity {
 
     @Inject
-    protected T mPresenter;
-
+    protected P mPresenter;
     private Unbinder mBind;
-
     protected boolean isTranslucentStatusBar = true;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BaseApp.addActivity(this);
         beforeSetContentView();
         setContentView(getLayoutId());
         if (isTranslucentStatusBar) {
@@ -36,19 +34,15 @@ public abstract class ABaseActivity<T extends RxPresenter> extends AActivity {
         }
         StatusBarUtila.darkMode(this, isDarkMode());
         mBind = ButterKnife.bind(this);
-        BaseApp.addActivity(this);
+        beforeInject(savedInstanceState);
         inject();
         registerDefaultEvent();
         if (mPresenter != null) {
-            mPresenter.attachView(this);
+            mPresenter.attachV(this);
         }
-        initView();
+        initView(savedInstanceState);
         initData();
     }
-
-    protected void beforeSetContentView() {
-    }
-
 
     @Override
     protected void onResume() {
@@ -62,9 +56,8 @@ public abstract class ABaseActivity<T extends RxPresenter> extends AActivity {
 
     @Override
     protected void onDestroy() {
-        if (mPresenter != null) {
-            mPresenter.detachView();
-        }
+        if (mPresenter != null)
+            mPresenter.detachV();
         mBind.unbind();
         BaseApp.removeActivity(this);
         super.onDestroy();
@@ -79,21 +72,18 @@ public abstract class ABaseActivity<T extends RxPresenter> extends AActivity {
         return false;
     }
 
+    public void setTranslucentStatusBar(boolean translucentStatusBar) {
+        isTranslucentStatusBar = translucentStatusBar;
+    }
+
     /**
      * 注册rxbus订阅事件
      */
     public void registerDefaultEvent() {
-        mPresenter.addSubscribe(RxBus.getInstance().toFlowable(RxEvent.class).compose(RxUtils.rxSchedulerHelper())
-                .subscribe(event -> handleDefaultEvent(event)));
+        RxBus.getInstance().toFlowable(RxEvent.class).compose(RxUtils.rxSchedulerHelper())
+                .compose(bindToLifecycle())
+                .subscribe(event -> handleDefaultEvent(event));
     }
-
-    protected abstract int getLayoutId();
-
-    protected abstract void inject();
-
-    protected abstract void initView();
-
-    protected abstract void initData();
 
     /**
      * 处理默认订阅事件
@@ -102,7 +92,10 @@ public abstract class ABaseActivity<T extends RxPresenter> extends AActivity {
      */
     public abstract void handleDefaultEvent(RxEvent event);
 
-    public void setTranslucentStatusBar(boolean translucentStatusBar) {
-        isTranslucentStatusBar = translucentStatusBar;
+    protected void beforeSetContentView() {
+    }
+
+    protected void beforeInject(Bundle savedInstanceState) {
+
     }
 }

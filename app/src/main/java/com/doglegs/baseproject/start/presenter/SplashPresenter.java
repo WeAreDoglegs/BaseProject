@@ -2,13 +2,14 @@ package com.doglegs.baseproject.start.presenter;
 
 import com.doglegs.baseproject.start.model.StartRetrofit;
 import com.doglegs.baseproject.start.presenter.contract.ISplashContract;
+import com.doglegs.baseproject.start.ui.activity.SplashActivity;
 import com.doglegs.core.rx.RxPresenter;
 import com.doglegs.core.rx.RxThrowableConsumer;
 import com.doglegs.core.rx.RxUtils;
 
 import javax.inject.Inject;
 
-public class SplashPresenter extends RxPresenter<ISplashContract.IView> implements ISplashContract.IPresenter {
+public class SplashPresenter extends RxPresenter<SplashActivity> implements ISplashContract.IPresenter {
 
 
     private StartRetrofit startRetrofit;
@@ -25,16 +26,17 @@ public class SplashPresenter extends RxPresenter<ISplashContract.IView> implemen
     public void getUserInfo() {
         addSubscribe(
                 startRetrofit.getUserInfo().compose(RxUtils.rxSchedulerHelper())
-                        .compose(RxUtils.handleResult()).subscribe(loginInfo -> mView.refreshUserInfoSuccess(loginInfo),
+                        .compose(getV().bindToLifecycle())
+                        .compose(RxUtils.handleResult()).subscribe(loginInfo -> getV().refreshUserInfoSuccess(loginInfo),
                         new RxThrowableConsumer() {
                             @Override
                             public void handleThrowable(Throwable throwable) {
-                                mView.refreshUserInfoError();
+                                getV().refreshUserInfoError();
                             }
 
                             @Override
                             public void handleConnectException() {
-                                mView.refreshUserInfoError();
+                                getV().refreshUserInfoError();
                             }
                         })
         );
@@ -62,16 +64,16 @@ public class SplashPresenter extends RxPresenter<ISplashContract.IView> implemen
         addSubscribe(
                 startRetrofit.getVersionLast(appTerminal, versionCode, appPlatform, appChannel).compose(RxUtils.rxSchedulerHelper())
                         .compose(RxUtils.handleResult()).subscribe(updateInfo -> {
-                    mView.getVersionLastSuccess(updateInfo);
+                    getV().getVersionLastSuccess(updateInfo);
                 }, new RxThrowableConsumer() {
                     @Override
                     public void handleThrowable(Throwable throwable) {
-                        mView.getVersionLastSuccess(null);
+                        getV().getVersionLastSuccess(null);
                     }
 
                     @Override
                     public void handleConnectException() {
-                        mView.getVersionLastSuccess(null);
+                        getV().getVersionLastSuccess(null);
                     }
                 })
         );

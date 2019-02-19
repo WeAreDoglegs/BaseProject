@@ -6,13 +6,21 @@ public class Constants {
      * js交互数据类型
      */
     public interface JsType {
-        String SET_TITLE = "SET_TITLE";
-        String UPDATE_TOKEN = "UPDATE_TOKEN";
-        //页面跳转
-        String UPLOAD = "UPLOAD";
+        //退出登录
         String LOGIN = "LOGIN";
+        //地图
         String MAP = "MAP";
+        //拍照、从相册选择
+        String UPLOAD = "UPLOAD";
+        //进入首页
         String HOME = "HOME";
+        //更新token
+        String UPDATE_TOKEN = "UPDATE_TOKEN";
+        //跳转webview
+        String WEBVIEW = "WEB_VIEW";
+
+        String SET_TITLE = "SET_TITLE";
+        //跳转历史汇总页面
         String HISTORY = "HISTORY";
     }
 

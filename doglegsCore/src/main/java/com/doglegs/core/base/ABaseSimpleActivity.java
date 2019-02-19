@@ -18,13 +18,12 @@ public abstract class ABaseSimpleActivity extends AActivity {
 
     private Unbinder mBind;
 
-    private CompositeDisposable mCompositeDisposable = new CompositeDisposable();
-
     protected boolean isTranslucentStatusBar = true;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        BaseApp.addActivity(this);
         beforeSetContentView();
         setContentView(getLayoutId());
         if (isTranslucentStatusBar) {
@@ -36,7 +35,7 @@ public abstract class ABaseSimpleActivity extends AActivity {
         beforeInject(savedInstanceState);
         inject();
         registerDefaultEvent();
-        initView();
+        initView(savedInstanceState);
         initData();
     }
 
@@ -57,7 +56,6 @@ public abstract class ABaseSimpleActivity extends AActivity {
     @Override
     protected void onDestroy() {
         mBind.unbind();
-        mCompositeDisposable.dispose();
         BaseApp.removeActivity(this);
         super.onDestroy();
     }
@@ -71,21 +69,18 @@ public abstract class ABaseSimpleActivity extends AActivity {
         return false;
     }
 
+    public void setTranslucentStatusBar(boolean translucentStatusBar) {
+        isTranslucentStatusBar = translucentStatusBar;
+    }
+
     /**
      * 注册rxbus订阅事件
      */
     public void registerDefaultEvent() {
-        mCompositeDisposable.add(RxBus.getInstance().toFlowable(RxEvent.class).compose(RxUtils.rxSchedulerHelper())
-                .subscribe(event -> handleDefaultEvent(event)));
+        RxBus.getInstance().toFlowable(RxEvent.class).compose(RxUtils.rxSchedulerHelper())
+                .compose(bindToLifecycle())
+                .subscribe(event -> handleDefaultEvent(event));
     }
-
-    protected abstract int getLayoutId();
-
-    protected abstract void inject();
-
-    protected abstract void initView();
-
-    protected abstract void initData();
 
     protected void beforeInject(Bundle savedInstanceState) {
 
@@ -97,9 +92,5 @@ public abstract class ABaseSimpleActivity extends AActivity {
      * @param event
      */
     public abstract void handleDefaultEvent(RxEvent event);
-
-    public void setTranslucentStatusBar(boolean translucentStatusBar) {
-        isTranslucentStatusBar = translucentStatusBar;
-    }
 
 }

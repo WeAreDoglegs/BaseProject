@@ -77,6 +77,9 @@ dependencies {
     api libraries.rxjava
     api libraries.rxandroid
     api libraries.rxpermissions
+    api libraries.rxlifecycle
+    api libraries.rxlifecycleAndroid
+    api libraries.rxlifecycleComponents
     //图片
     api libraries.glide
     api 'jp.wasabeef:glide-transformations:2.0.2'

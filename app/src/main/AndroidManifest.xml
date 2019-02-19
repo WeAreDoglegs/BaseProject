@@ -70,6 +70,7 @@
         <activity
             android:name=".start.ui.activity.LoginRegisteredActivity"
             android:launchMode="singleTask" />
+        <activity android:name=".base.DogLegsWebActivity"/>
     </application>
 
 </manifest>

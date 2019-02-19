@@ -17,6 +17,7 @@ import com.doglegs.core.rx.RxEvent;
 import com.doglegs.core.rx.RxPresenter;
 import com.doglegs.core.rx.RxUtils;
 import com.doglegs.core.utils.BarUtils;
+import com.trello.rxlifecycle2.components.support.RxFragment;
 
 import javax.inject.Inject;
 
@@ -26,10 +27,12 @@ import butterknife.Unbinder;
 /**
  * desc : 懒加载fragment 配合FragmentStatePagerAdapter 使用
  */
-public abstract class ABaseFragment<T extends RxPresenter> extends Fragment implements IBaseView {
+public abstract class ABaseFragment<T extends RxPresenter> extends RxFragment implements IBaseView {
 
     protected final String TAG = getClass().getSimpleName();
+
     protected View mView;
+
     @Inject
     public Context mContext;
     @Inject
@@ -47,16 +50,16 @@ public abstract class ABaseFragment<T extends RxPresenter> extends Fragment impl
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
-            savedInstanceState) {
-        initInject();
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        inject();
         registerDefaultEvent();
         mView = View.inflate(mContext, getLayoutId(), null);
         mUnBind = ButterKnife.bind(this, mView);
         if (mPresenter != null) {
-            mPresenter.attachView(this);
+            mPresenter.attachV(this);
         }
-        initView();
+        initView(savedInstanceState);
         return mView;
     }
 
@@ -69,19 +72,11 @@ public abstract class ABaseFragment<T extends RxPresenter> extends Fragment impl
     @Override
     public void onDestroyView() {
         if (mPresenter != null) {
-            mPresenter.detachView();
+            mPresenter.detachV();
         }
         mUnBind.unbind();
         super.onDestroyView();
     }
-
-    public abstract int getLayoutId();
-
-    public abstract void initInject();
-
-    public abstract void initView();
-
-    public abstract void initData();
 
     @Override
     public void onStartLoad() {
@@ -102,8 +97,9 @@ public abstract class ABaseFragment<T extends RxPresenter> extends Fragment impl
      * 注册rxbus订阅事件
      */
     public void registerDefaultEvent() {
-        mPresenter.addSubscribe(RxBus.getInstance().toFlowable(RxEvent.class).compose(RxUtils.<RxEvent>rxSchedulerHelper())
-                .subscribe(event -> handleDefaultEvent(event)));
+        RxBus.getInstance().toFlowable(RxEvent.class).compose(RxUtils.rxSchedulerHelper())
+                .compose(bindToLifecycle())
+                .subscribe(event -> handleDefaultEvent(event));
     }
 
     /**

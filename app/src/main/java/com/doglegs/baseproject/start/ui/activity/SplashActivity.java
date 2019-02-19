@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.v7.widget.AppCompatImageView;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
@@ -75,26 +76,19 @@ public class SplashActivity extends DogLegsBaseActivity<SplashPresenter> impleme
     private int channelType = 1;
 
     @Override
-    protected void beforeSetContentView() {
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-    }
-
-    @Override
-    protected int getLayoutId() {
+    public int getLayoutId() {
         return R.layout.activity_splash;
     }
 
     @Override
-    protected void inject() {
+    public void inject() {
         DaggerActivityComponent.builder().appComponent(App.sAppComponent).
                 activityModule(new ActivityModule(this)).retrofitModule(new RetrofitModule())
                 .dialogModule(new DialogModule(this)).build().inject(this);
     }
 
     @Override
-    protected void initView() {
+    public void initView(Bundle savedInstanceState) {
         GlideApp.with(this).load(R.mipmap.ic_launcher)
                 .transition(new DrawableTransitionOptions().crossFade(500))
                 .apply(new RequestOptions().transform(new RoundedCorners(PixelUtils.dip2px(10))))
@@ -102,7 +96,14 @@ public class SplashActivity extends DogLegsBaseActivity<SplashPresenter> impleme
     }
 
     @Override
-    protected void initData() {
+    protected void beforeSetContentView() {
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    }
+
+    @Override
+    public void initData() {
         Flowable.timer(MIN_WAIT_PREVIEW, TimeUnit.MILLISECONDS).
                 compose(RxUtils.rxSchedulerHelper()).subscribe(aLong -> {
             mRxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_COARSE_LOCATION,

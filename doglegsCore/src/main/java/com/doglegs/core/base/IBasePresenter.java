@@ -1,9 +1,11 @@
 package com.doglegs.core.base;
 
-public interface IBasePresenter<T extends IBaseView> {
+public interface IBasePresenter<V extends IBaseView> {
 
-    void attachView(T view);
+    void attachV(V view);
 
-    void detachView();
+    void detachV();
+
+    boolean hasV();
 
 }

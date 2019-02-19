@@ -6,18 +6,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.doglegs.core.rx.RxPresenter;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.doglegs.core.R;
 import com.doglegs.core.dialog.LoadingProgressDialog;
 import com.doglegs.core.utils.BarUtils;
+import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import javax.inject.Inject;
 
-public abstract class AActivity extends AppCompatActivity implements IBaseView {
+public abstract class AActivity extends RxAppCompatActivity implements IBaseView {
 
     protected final String TAG = getClass().getSimpleName();
 

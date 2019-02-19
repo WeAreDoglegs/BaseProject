@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import com.tbruyelle.rxpermissions2.RxPermissions;
 import com.doglegs.core.rx.RxEvent;
 import com.doglegs.core.utils.BarUtils;
+import com.trello.rxlifecycle2.components.support.RxFragment;
 
 import javax.inject.Inject;
 
@@ -23,7 +24,7 @@ import butterknife.Unbinder;
 /**
  * desc : 懒加载fragment 配合FragmentStatePagerAdapter 使用
  */
-public abstract class ABaseSimpleFragment extends Fragment implements IBaseView {
+public abstract class ABaseSimpleFragment extends RxFragment implements IBaseView {
 
     protected final String TAG = getClass().getSimpleName();
     protected View mView;
@@ -43,12 +44,11 @@ public abstract class ABaseSimpleFragment extends Fragment implements IBaseView 
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
-            savedInstanceState) {
-        initInject();
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        inject();
         mView = View.inflate(mContext, getLayoutId(), null);
         mUnBind = ButterKnife.bind(this, mView);
-        initView();
+        initView(savedInstanceState);
         return mView;
     }
 
@@ -63,14 +63,6 @@ public abstract class ABaseSimpleFragment extends Fragment implements IBaseView 
         mUnBind.unbind();
         super.onDestroyView();
     }
-
-    public abstract int getLayoutId();
-
-    public abstract void initInject();
-
-    public abstract void initView();
-
-    public abstract void initData();
 
     @Override
     public void onStartLoad() {

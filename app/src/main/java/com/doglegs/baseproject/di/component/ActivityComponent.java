@@ -1,5 +1,6 @@
 package com.doglegs.baseproject.di.component;
 
+import com.doglegs.baseproject.base.DogLegsWebActivity;
 import com.doglegs.baseproject.di.module.ActivityModule;
 import com.doglegs.baseproject.di.module.DialogModule;
 import com.doglegs.baseproject.di.module.RetrofitModule;
@@ -17,4 +18,5 @@ public interface ActivityComponent {
 
     void inject(SplashActivity splashActivity);
     void inject(LoginRegisteredActivity loginRegisteredActivity);
+    void inject(DogLegsWebActivity webActivity);
 }

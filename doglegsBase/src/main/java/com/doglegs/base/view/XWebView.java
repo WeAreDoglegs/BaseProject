@@ -21,12 +21,14 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import com.alibaba.android.arouter.launcher.ARouter;
 import com.doglegs.base.R;
 import com.doglegs.base.R2;
 import com.doglegs.base.bean.net.LoginInfo;
 import com.doglegs.base.bean.normal.JsInterface;
 import com.doglegs.base.constants.Constants;
 import com.doglegs.base.manager.SpManager;
+import com.doglegs.base.route.RouteMap;
 import com.doglegs.core.rx.RxBus;
 import com.doglegs.core.rx.RxEvent;
 import com.doglegs.core.utils.LogUtils;
@@ -47,6 +49,8 @@ public class XWebView extends RelativeLayout {
     ProgressBar pbLoading;
     @BindView(R2.id.wb_finance)
     WebView wbFinance;
+
+    private OnInvokeNativePushSelector onInvokeNativePushSelector;
 
     public XWebView(Context context) {
         this(context, null);
@@ -203,15 +207,17 @@ public class XWebView extends RelativeLayout {
                 RxBus.getInstance().post(new RxEvent(RxEvent.EventType.JS_MAP, null));
             } else if (jsInterface.getType().equals(Constants.JsType.UPLOAD)) {
                 RxBus.getInstance().post(new RxEvent(RxEvent.EventType.JS_CAPTURE, null));
-            } else if (jsInterface.getType().equals(Constants.JsType.SET_TITLE)) {
-                JsInterface.PayloadBean payload = jsInterface.getPayload();
-                RxBus.getInstance().post(new RxEvent(RxEvent.EventType.JS_PAYLOAD, payload));
             } else if (jsInterface.getType().equals(Constants.JsType.HOME)) {
                 RxBus.getInstance().post(new RxEvent(RxEvent.EventType.JS_HOME, null));
             } else if (jsInterface.getType().equals(Constants.JsType.UPDATE_TOKEN)) {
                 RxBus.getInstance().post(new RxEvent(RxEvent.EventType.JS_UPDATE_TOKEN, jsInterface.getPayload().getToken()));
-            } else if (jsInterface.getType().equals(Constants.JsType.HISTORY)) {
-                RxBus.getInstance().post(new RxEvent(RxEvent.EventType.JS_HISTORY, null));
+            } else if (jsInterface.getType().equals(Constants.JsType.SET_TITLE)) {
+                JsInterface.PayloadBean payload = jsInterface.getPayload();
+                RxBus.getInstance().post(new RxEvent(RxEvent.EventType.JS_PAYLOAD, payload));
+            }else {
+                if (onInvokeNativePushSelector != null) {
+                    onInvokeNativePushSelector.invokeNativePopSelector(obj,jsInterface);
+                }
             }
         } catch (Exception exception) {
             ToastUtils.showShortToastSafe(exception.getMessage());
@@ -223,10 +229,10 @@ public class XWebView extends RelativeLayout {
         try {
             LogUtils.i(obj);
             JSONObject jsonObject = new JSONObject(obj);
-//            boolean root = jsonObject.getBoolean("root");
-//            if (root) {
-//                ARouter.getInstance().build(RouteMap.ACTIVITY_MAIN_HOME).navigation();
-//            }
+            boolean root = jsonObject.getBoolean("root");
+            if (root) {
+                ARouter.getInstance().build(RouteMap.ACTIVITY_MAIN_HOME).navigation();
+            }
             if (getContext() instanceof Activity) {
                 Activity activity = (Activity) getContext();
                 activity.finish();
@@ -251,4 +257,11 @@ public class XWebView extends RelativeLayout {
         wbFinance.loadUrl(functionName);
     }
 
+    public interface OnInvokeNativePushSelector {
+        void invokeNativePopSelector(String obj, JsInterface jsInterface);
+    }
+
+    public void setOnInvokeNativePushSelector(OnInvokeNativePushSelector onInvokeNativePushSelector) {
+        this.onInvokeNativePushSelector = onInvokeNativePushSelector;
+    }
 }

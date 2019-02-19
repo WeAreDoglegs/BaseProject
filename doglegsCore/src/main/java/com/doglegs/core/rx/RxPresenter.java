@@ -1,25 +1,27 @@
 package com.doglegs.core.rx;
 
-
 import com.doglegs.core.base.IBasePresenter;
 import com.doglegs.core.base.IBaseView;
+
+import java.lang.ref.WeakReference;
 
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 
-public class RxPresenter<T extends IBaseView> implements IBasePresenter<T> {
+public class RxPresenter<V extends IBaseView> implements IBasePresenter<V> {
 
     protected final String TAG = getClass().getSimpleName();
 
-    protected T mView;
-    protected CompositeDisposable mCompositeDisposable;
+    private WeakReference<V> v;
+    private CompositeDisposable mCompositeDisposable;
+
+    public RxPresenter() {
+    }
 
     /**
      * 将Rxjava操作对象添加到集合中统一管理
-     *
-     * @param subscription
      */
-    public void addSubscribe(Disposable subscription) {
+    protected void addSubscribe(Disposable subscription) {
         if (mCompositeDisposable == null) {
             mCompositeDisposable = new CompositeDisposable();
         }
@@ -37,21 +39,33 @@ public class RxPresenter<T extends IBaseView> implements IBasePresenter<T> {
 
     /**
      * 对Activity的View进行绑定
-     *
-     * @param view
      */
     @Override
-    public void attachView(T view) {
-        this.mView = view;
+    public void attachV(V view) {
+        v = new WeakReference<V>(view);
     }
 
     /**
      * 取消绑定View
      */
     @Override
-    public void detachView() {
-        mView = null;
-        unSubscribe();
+    public void detachV() {
+        if (v.get() != null) {
+            v.clear();
+        }
+        v = null;
+    }
+
+    public V getV() {
+        if (v == null || v.get() == null) {
+            throw new IllegalStateException("v can not be null");
+        }
+        return v.get();
+    }
+
+    @Override
+    public boolean hasV() {
+        return v != null && v.get() != null;
     }
 
 }
